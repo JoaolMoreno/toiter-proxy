@@ -1,6 +1,6 @@
 FROM nginx:latest
 
-# Atualize a lista de pacotes e instale o envsubst
+# Instale o envsubst (gettext-base)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gettext-base && \
     apt-get clean && \
@@ -10,7 +10,7 @@ RUN apt-get update && \
 COPY nginx.conf /etc/nginx/templates/nginx.conf.template
 
 # Substituir variáveis de ambiente e iniciar o NGINX
-CMD envsubst < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'
+CMD envsubst '${USER_SERVICE_HOST} ${POST_SERVICE_HOST}' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'
 
 # Exponha a porta 80
 EXPOSE 80
